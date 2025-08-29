@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SongMates~</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen" , background="background.jpg">
+    <div class="bg-white shadow-lg rounded-2xl p-6 w-96 text-center">
+        <h1 class="text-xl font-semibold mb-4">Find Your Song Mate! 🎶</h1>
+
+        <!-- Artist Dropdown -->
+        <select id="artistDropdown" class="w-full p-2 border rounded-lg mb-4">
+            <option value="">Select an artist</option>
+            <option value="Taylor Swift">Taylor Swift</option>
+            <option value="Camila Cabello">Camila Cabello</option>
+            <option value="Lana Del Ray">Lana Del Ray</option>
+            <option value="Coldplay">Coldplay</option>
+            <option value="Katseye">Katseye</option>
+            <option value="BTS">BTS</option>
+            <option value="Ariana Grande">Ariana Grande</option>
+            <option value="The Weeknd">The Weeknd</option>
+            <option value="Justin Bieber">Justin Bieber</option>
+            <option value="Charlie Puth">Charlie Puth</option>
+            <option value="Ed Sheeran">Ed Sheeran</option>
+            <option value="Billie Eilish">Billie Eilish</option>
+            <option value="Post Malone">Post Malone</option>
+            <option value="YOASOBI">YOASOBI</option>
+            <option value="Hotel Ugly">Hotel Ugly</option>
+            <option value="Dua Lipa">Dua Lipa</option>
+            <option value="Diljit">Diljit</option>
+            <option value="Karan Aujla">Karan Aujla</option>
+            <option value="Mark Amber">Mark Amber</option>
+            <option value="Seedhe Maut">Seedhe Maut</option>
+            <option value="Arjit Singh">Arjit Singh</option>
+            <option value="Lagy Gaga">Lagy Gaga</option>
+            <option value="Sonu Nigam">Sonu Nigam</option>
+            <option value="Imagine Dragons">Imagine Dragons</option>
+            <option value="Kushagra">Kushagra</option>
+            <option value="Blackpink">Blackpink</option>
+            <option value="Graham">Graham</option>
+            <option value="Alec Benjamin">Alec Benjamin</option>
+            <option value="Guru Randhawa">Guru Randhawa</option>
+            <option value="Udit Narayan">Udit Narayan</option>
+            <option value="TV Girl">TV Girl</option>
+            <option value="Arctic Monkeys">Arctic Monkeys</option>
+            <option value="Shreya Ghosal">Shreya Ghosal</option>
+            <option value="AP Dhillon">AP Dhillon</option>
+            <option value="Carly Rae Jepsen">Carly Rae Jepsen</option>
+            <option value="Pritam">Pritam</option>
+            <option value="LAUV">LAUV</option>
+            <option value="Stray Kids">Stray Kids</option>
+            <option value="Isabel La Rosa">Isabel La Rosa</option>
+            <option value="Aditya Rekhari">Aditya Rekhari</option>
+            <option value="Maneskin">Maneskin</option>
+            <option value="Sunidhi Chauhan">Sunidhi Chauhan</option>
+            <option value="Anuv Jain">Anuv Jain</option>
+            <option value="Mohit Sharma">Mohit Sharma</option>
+            <option value="Armaan Malik">Armaan Malik</option>
+            <option value="Kishore Kumar">Kishore Kumar</option>
+            <option value="Tobii">Tobii</option>
+            <option value="KK">KK</option>
+            <option value="Papon">Papon</option>
+            <option value="One Direction">One Direction</option>
+            <option value="Shawn Mendes">Shawn Mendes</option>
+            <option value="Lata Mangeshkar">Lata Mangeshkar</option>
+            <option value="Piyush Mishra">Piyush Mishra</option>
+            <option value="Handsome Family">Handsome Family</option>
+            <option value="Manna Dey">Manna Dey</option>
+        </select>
+
+        <!-- Selected Artists Display -->
+        <div id="selectedArtists" class="mb-4 text-gray-700 text-sm"></div>
+
+        <!-- Button -->
+        <button onclick="findBestMatch()"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">
+            Find Match
+        </button>
+
+        <!-- Result -->
+        <div id="result" class="mt-4 text-lg font-medium text-gray-800"></div>
+    </div>
+
+    <script>
+        let userSelection = [];
+        // People dataset
+        const people = [
+            { name: "Nandini", artists: ["Taylor Swift", "Hotel Ugly", "Katseye", "Coldplay", "Dua Lipa"] },
+            { name: "Sparsh", artists: ["Diljit", "Karan Aujla", "The Weeknd", "Honey Singh", "Coldplay"] },
+            { name: "Aditya", artists: ["Mark Amber", "Seedhe Maut", "Ed Sheeran", "Billie Eilish", "The Weeknd"] },
+            { name: "Yuvraj", artists: ["Arjit Singh", "Lady Gaga", "Honey Singh", "Sonu Nigam", "Imagine Dragons"] },
+            { name: "Kushagra", artists: ["Kushagra", "Blackpink", "Arijit Singh", "Graham", "Alec Benjamin"] },
+            { name: "Kartik", artists: ["Honey singh", "Guru Randhawa", "Seedhe Maut", "Billie Eilish", "Post Malone"] },
+            { name: "Isa", artists: ["Imagine Dragons", "Ed Sheeran", "Lana Del Rey", "Hotel Ugly", "Udit narayan"] },
+            { name: "Tanishq", artists: ["Seedhe Maut", "TV Girl", "Arctic Monkeys", "Hotel Ugly", "Coldplay"] },
+            { name: "Tejasvi", artists: ["Arjit Singh", "AP Dhillon", "Carly Rae Jepsen", "Shreya Ghosal", "Diljit"] },
+            { name: "Hardik", artists: ["Diljit", "Honey Singh", "Lana Del Rey", "Arjit Singh", "Post Malone"] },
+            { name: "Priya", artists: ["Arjit Singh", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "Shreya Ghosal"] },
+            { name: "Harleen", artists: ["Karan Aujla", "Pritam", "Lana Del Rey", "Honey Singh", "Diljit"] },
+            { name: "Haasini", artists: ["AP Dhillon", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "LAUV"] },
+            { name: "Navya", artists: ["Stray Kids", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "Diljit"] },
+            { name: "Tanishq", artists: ["Karan Aujla", "Ed Sheeran", "Seedhe Maut", "Billie Eilish", "The Weeknd"] },
+            { name: "Krisha", artists: ["Isabel La Rosa", "Aditya Rikhari", "Maneskin", "Ed Sheeran", "Blackpink"] },
+            { name: "Parishka", artists: ["Diljit", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "Post Malone"] },
+            { name: "Tamanna", artists: ["Arjit Singh", "Charlie Puth", "Shreya Ghosal", "Billie Eilish", "The Weeknd"] },
+            { name: "Tulika", artists: ["Sunidhi Chauhan", "Arjit Singh", "Udit Naryan", "The Weeknd", "Anuv Jain"] },
+            { name: "Sushma", artists: ["Mohit Sharma", "Armaan Malik", "Arjit Singh", "Shreya Ghosal", "Kishore Kumar"] },
+            { name: "Sam", artists: ["Arctic Monkeys", "Tobii", "Seedhe Maut", "Lana Del Rey", "KK"] },
+            { name: "Aditi", artists: ["Papon", "Ed Sheeran", "KK", "One Direction", "Shawn Mendes"] },
+            { name: "Krishna", artists: ["Lata Mangeshkar", "Piyush Mishra", "Handsome Family", "Kishore Kumar", "Manna Dey"] },
+            { name: "rajni kant", artists: ["Seedhe Maut", "TV Girl", "Arctic Monkeys", "Hotel Ugly", "Coldplay"] },
+
+        ];
+
+        // Handle dropdown selection
+        const dropdown = document.getElementById("artistDropdown");
+        const selectedArtistsDiv = document.getElementById("selectedArtists");
+
+        dropdown.addEventListener("change", () => {
+            const artist = dropdown.value;
+            if (artist && !userSelection.includes(artist) && userSelection.length < 5)     // => artist && makes sure the choice bar isn't empty, =>!userSelection.includes(artist) makes sure the artists aren't duplicated, => && user.Selection.length < 5 says that the no of artists should be less than 5.
+            {
+                userSelection.push(artist);        // if the criteria passes, then we update the selected artist and add it to the empty list (aka the user's choice of artists)
+                updateSelectedArtists();        // adds the artists to selected artists of the user
+            }
+            dropdown.value = ""; // resets dropdown
+        });
+
+        function updateSelectedArtists() {
+            selectedArtistsDiv.innerHTML = "Your picks: " + userSelection.join(", ");   //joins all the artists the user selected by commas and displayed
+        }
+
+        // Match logic
+        function calculateMatch(userSelection, person) {
+            const matches = userSelection.filter(artist => person.artists.includes(artist));
+            const percentage = (matches.length / userSelection.length) * 100;
+            return { name: person.name, percentage: percentage.toFixed(0), matches };
+        }
+
+        function findBestMatch() {
+            if (userSelection.length === 0) {
+                document.getElementById("result").innerText = "Pick at least 1 artist!";
+                return;
+            }
+
+            const results = people.map(p => calculateMatch(userSelection, p));
+            results.sort((a, b) => b.percentage - a.percentage);
+
+            const best = results[0];
+            document.getElementById("result").innerText =
+                `${best.name} is your top match 💫 (${best.percentage}% similar, shared: ${best.matches.join(", ")})`;
+        }
+    </script>
+</body>
+
+</html>
