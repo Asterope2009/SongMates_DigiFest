@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SongMates~ Select Artists</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .artist-card {
+      width: 180px;
+      height: 240px;
+      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+      border: 3px solid transparent;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #1f1f1f;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      position: relative;
+    }
+
+    .artist-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .selected {
+      border: 3px solid #22c55e;
+    }
+
+    .artist-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .artist-name {
+      padding: 8px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .info-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: #22c55e;
+      color: black;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .info-btn:hover {
+      background: #16a34a;
+      color: white;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 50;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #1f1f1f;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+
+    .modal-content img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: white;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4">
+  <h1 class="text-3xl font-bold mb-6">Select Your Favorite Artists</h1>
+  <div id="artistGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+  <button onclick="saveAndGo()"
+    class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg text-lg font-semibold transition mb-4">
+    Find Match
+  </button>
+  <div id="selectedArtists" class="mb-4 text-gray-200 text-lg">No artists selected yet.</div>
+
+  <!-- Modal -->
+  <div id="artistModal" class="modal flex">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <img id="modalImage" src="" alt="">
+      <h2 id="modalName" class="text-2xl font-bold mb-2"></h2>
+      <p id="modalDesc" class="text-gray-300">No description available yet...</p>
+    </div>
+  </div>
+
+  <script>
+    const artists = [
+      { name: "Adele", image: "images/adele.jpg", desc: "British singer known for powerful ballads." },
+      { name: "Aditya Rikhari", image: "images/aditya.jpg", desc: "Indie Indian singer-songwriter." },
+      { name: "Alec Benjamin", image: "images/alecbenjamin.jpg", desc: "American pop artist, lyrical storytelling." },
+      { name: "Anuv Jain", image: "images/anuv.jpg", desc: "Romantic indie artist from India." },
+      { name: "AP Dhillon", image: "images/apdhillon.jpg", desc: "Punjabi music sensation blending hip hop." },
+      { name: "Arctic Monkeys", image: "images/arcticmonkeys.jpg", desc: "British rock band with iconic style." },
+      { name: "Ariana Grande", image: "images/ariana.jpg", desc: "Pop powerhouse with a 4-octave range." },
+      { name: "Arjit Singh", image: "images/arjit.jpg", desc: "Bollywood's king of soulful playback singing." },
+      { name: "Armaan Malik", image: "images/armaan.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Billie Eilish", image: "images/billie.jpg" , desc: "Bollywood's king of soulful playback singing." },
+            { name: "Blackpink", image: "images/blackpink.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Bruno Mars", image: "images/brunomars.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "BTS", image: "images/BTS.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Camila Cabello", image: "images/camila.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Carly Rae Jepsen", image: "images/carlyraejepsen.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Charlie Puth", image: "images/charlie.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Coldplay", image: "images/coldplay.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Diljit Dosanjh", image: "images/diljit.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Dua Lipa", image: "images/dua.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Ed Sheeran", image: "images/ed.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Graham", image: "images/graham.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Guru Randhawa", image: "images/guru.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Honey Singh", image: "images/honeysingh.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Hotel Ugly", image: "images/hotelugly.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Imagine Dragons", image: "images/imaginedragons.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Isabel La Rosa", image: "images/isabel.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Justin Bieber", image: "images/justin.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Karan Aujla", image: "images/karan.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Katseye", image: "images/katseye.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Kishore Kumar", image: "images/kishore.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "KK", image: "images/kk.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Lady Gaga", image: "images/ladygaga.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Lana Del Rey", image: "images/lana.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Lata Mangeshkar", image: "images/lata.jpg", desc: "Bollywood's king of soulful playback singing."},
+            { name: "LAUV", image: "images/lauv.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Maneskin", image: "images/maneskin.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Manna Dey", image: "images/mannadey.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Mark Amber", image: "images/markamber.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Mohit Sharma", image: "images/mohit.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Papon", image: "images/papon.jpg", desc: "Bollywood's king of soulful playback singing." },
+            { name: "Post Malone", image: "images/postmalone.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Piyush Mishra", image: "images/piyush.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Pritam", image: "images/pritam.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Rihanna", image: "images/rihanna.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Seedhe Maut", image: "images/seedhemaut.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Shakira", image: "images/shakira.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Shawn Mendes", image: "images/shawn.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Shreya Ghosal", image: "images/shreya.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Sonu Nigam", image: "images/sonunigam.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Sunidhi Chauhan", image: "images/sunidhi.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Stray Kids", image: "images/straykids.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Taylor Swift", image: "images/taylor.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Tobii", image: "images/tobii.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "TV Girl", image: "images/tvgirl.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "Udit Narayan", image: "images/udit.jpg" , desc: "Bollywood's king of soulful playback singing."},
+            { name: "The Weeknd", image: "images/weeknd.jpg" , desc: "Bollywood's king of soulful playback singing."},
+      
+ 
+     
+    ];
+
+    let userSelection = [];
+    const artistGrid = document.getElementById("artistGrid");
+    const selectedArtistsDiv = document.getElementById("selectedArtists");
+
+    // Modal elements
+    const modal = document.getElementById("artistModal");
+    const modalName = document.getElementById("modalName");
+    const modalImage = document.getElementById("modalImage");
+    const modalDesc = document.getElementById("modalDesc");
+
+    // Render artist cards
+    artists.forEach(artist => {
+      const card = document.createElement("div");
+      card.className = "artist-card";
+
+      card.innerHTML = `
+        <img src="${artist.image}" alt="${artist.name}">
+        <div class="artist-name">${artist.name}</div>
+        <div class="info-btn">&rsaquo;</div>
+      `;
+
+      // Selection
+      card.addEventListener("click", (e) => {
+        if (e.target.classList.contains("info-btn")) return; // prevent arrow click from selecting
+        if (userSelection.includes(artist.name)) {
+          userSelection = userSelection.filter(name => name !== artist.name);
+          card.classList.remove("selected");
+        } else if (userSelection.length < 5) {
+          userSelection.push(artist.name);
+          card.classList.add("selected");
+        }
+        selectedArtistsDiv.innerText = userSelection.length ? "Your picks: " + userSelection.join(", ") : "No artists selected yet.";
+      });
+
+      // Info button
+      card.querySelector(".info-btn").addEventListener("click", () => {
+        modal.style.display = "flex";
+        modalName.textContent = artist.name;
+        modalImage.src = artist.image;
+        modalDesc.textContent = artist.desc;
+      });
+
+      artistGrid.appendChild(card);
+    });
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    function saveAndGo() {
+      if (userSelection.length === 0) {
+        alert("Select at least one artist!");
+        return;
+      }
+      localStorage.setItem("selectedArtists", JSON.stringify(userSelection));
+      window.location.href = "match.html"; // Redirect to match page
+    }
+
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>
