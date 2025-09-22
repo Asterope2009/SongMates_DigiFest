@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000, #121212);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-container {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 420px;
+            box-shadow: 0 0 25px rgba(29, 185, 84, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-container:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-pic {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #1DB954;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem auto;
+            font-size: 42px;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+            transition: 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.08) rotate(3deg);
+            background: #1ed760;
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            font-size: 14px;
+            background: #1c1c1c;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #1DB954;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.6);
+            background: #222;
+        }
+
+        textarea {
+            resize: none;
+            height: 90px;
+        }
+
+        button {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #1DB954, #1ed760);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+        }
+
+        button:hover {
+            background: white;
+            color: #1DB954;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="profile-pic">+</div>
+
+        <form action="finaltry.html" method="post">
+            <div class="input-group">
+                <input type="text" name="firstname" placeholder="First Name" required>
+                <input type="text" name="lastname" placeholder="Last Name" required>
+            </div>
+
+            <input type="text" name="username" placeholder="Username" required>
+            <br><br>
+
+            <select name="zodiac" required>
+                <option value="">Select Zodiac Sign</option>
+                <option value="aries">Aries</option>
+                <option value="taurus">Taurus</option>
+                <option value="gemini">Gemini</option>
+                <option value="cancer">Cancer</option>
+                <option value="leo">Leo</option>
+                <option value="virgo">Virgo</option>
+                <option value="libra">Libra</option>
+                <option value="scorpio">Scorpio</option>
+                <option value="sagittarius">Sagittarius</option>
+                <option value="capricorn">Capricorn</option>
+                <option value="aquarius">Aquarius</option>
+                <option value="pisces">Pisces</option>
+            </select>
+            <br><br>
+
+            <textarea name="personality" placeholder="Describe your personality... *optional*"></textarea>
+
+            <button type="button" onclick="window.location.href='finaltry.html';">Save Profile</button>
+        </form>
+    </div>
+</body>
+
+</html>

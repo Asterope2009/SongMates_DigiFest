@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SongMates~ Select Artists</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .artist-card {
+            width: 180px;
+            /* fixed width */
+            height: 220px;
+            /* fixed height */
+            transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #1f1f1f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .artist-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .selected {
+            border: 3px solid #22c55e;
+        }
+
+        .artist-card img {
+            width: 100%;
+            height: 175px;
+            object-fit: cover;
+        }
+
+        .artist-name {
+            padding: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+    </style>
+
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4">
+    <h1 class="text-3xl font-bold mb-6">Select Your Favorite Artists</h1>
+    <div id="artistGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+    <button onclick="saveAndGo()"
+        class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg text-lg font-semibold transition mb-4">
+        Find Match
+    </button>
+    <div id="selectedArtists" class="mb-4 text-gray-200 text-lg">No artists selected yet.</div>
+
+    <script>
+        const artists = [
+            { name: "Adele", image: "images/adele.jpg" },
+            { name: "Aditya Rikhari", image: "images/aditya.jpg" },
+            { name: "Alec Benjamin", image: "images/alecbenjamin.jpg" },
+            { name: "Anuv Jain", image: "images/anuv.jpg" },
+            { name: "AP Dhillon", image: "images/apdhillon.jpg" },
+            { name: "Arctic Monkeys", image: "images/arcticmonkeys.jpg" },
+            { name: "Ariana Grande", image: "images/ariana.jpg" },
+            { name: "Arjit Singh", image: "images/arjit.jpg" },
+            { name: "Armaan Malik", image: "images/armaan.jpg" },
+            { name: "Billie Eilish", image: "images/billie.jpg" },
+            { name: "Blackpink", image: "images/blackpink.jpg" },
+            { name: "Bruno Mars", image: "images/brunomars.jpg" },
+            { name: "BTS", image: "images/BTS.jpg" },
+            { name: "Camila Cabello", image: "images/camila.jpg" },
+            { name: "Carly Rae Jepsen", image: "images/carlyraejepsen.jpg" },
+            { name: "Charlie Puth", image: "images/charlie.jpg" },
+            { name: "Coldplay", image: "images/coldplay.jpg" },
+            { name: "Diljit Dosanjh", image: "images/diljit.jpg" },
+            { name: "Dua Lipa", image: "images/dua.jpg" },
+            { name: "Ed Sheeran", image: "images/ed.jpg" },
+            { name: "Graham", image: "images/graham.jpg" },
+            { name: "Guru Randhawa", image: "images/guru.jpg" },
+            { name: "Honey Singh", image: "images/honeysingh.jpg" },
+            { name: "Hotel Ugly", image: "images/hotelugly.jpg" },
+            { name: "Imagine Dragons", image: "images/imaginedragons.jpg" },
+            { name: "Isabel La Rosa", image: "images/isabel.jpg" },
+            { name: "Justin Bieber", image: "images/justin.jpg" },
+            { name: "Karan Aujla", image: "images/karan.jpg" },
+            { name: "Katseye", image: "images/katseye.jpg" },
+            { name: "Kishore Kumar", image: "images/kishore.jpg" },
+            { name: "KK", image: "images/kk.jpg" },
+            { name: "Lady Gaga", image: "images/ladygaga.jpg" },
+            { name: "Lana Del Rey", image: "images/lana.jpg" },
+            { name: "Lata Mangeshkar", image: "images/lata.jpg" },
+            { name: "LAUV", image: "images/lauv.jpg" },
+            { name: "Maneskin", image: "images/maneskin.jpg" },
+            { name: "Manna Dey", image: "images/mannadey.jpg" },
+            { name: "Mark Amber", image: "images/markamber.jpg" },
+            { name: "Mohit Sharma", image: "images/mohit.jpg" },
+            { name: "Papon", image: "images/papon.jpg" },
+            { name: "Post Malone", image: "images/postmalone.jpg" },
+            { name: "Piyush Mishra", image: "images/piyush.jpg" },
+            { name: "Pritam", image: "images/pritam.jpg" },
+            { name: "Rihanna", image: "images/rihanna.jpg" },
+            { name: "Seedhe Maut", image: "images/seedhemaut.jpg" },
+            { name: "Shakira", image: "images/shakira.jpg" },
+            { name: "Shawn Mendes", image: "images/shawn.jpg" },
+            { name: "Shreya Ghosal", image: "images/shreya.jpg" },
+            { name: "Sonu Nigam", image: "images/sonunigam.jpg" },
+            { name: "Sunidhi Chauhan", image: "images/sunidhi.jpg" },
+            { name: "Stray Kids", image: "images/straykids.jpg" },
+            { name: "Taylor Swift", image: "images/taylor.jpg" },
+            { name: "Tobii", image: "images/tobii.jpg" },
+            { name: "TV Girl", image: "images/tvgirl.jpg" },
+            { name: "Udit Narayan", image: "images/udit.jpg" },
+            { name: "The Weeknd", image: "images/weeknd.jpg" },
+        ];
+
+        let userSelection = [];
+        const artistGrid = document.getElementById("artistGrid");
+        const selectedArtistsDiv = document.getElementById("selectedArtists");
+
+        artists.forEach(artist => {
+            const card = document.createElement("div");
+            card.className = "artist-card bg-gray-800 rounded-lg cursor-pointer overflow-hidden";
+            card.innerHTML = `<img src="${artist.image}" alt="${artist.name}" class="w-full h-40 object-cover">
+                              <div class="p-2 text-center font-medium">${artist.name}</div>`;
+            card.addEventListener("click", () => {
+                if (userSelection.includes(artist.name)) {
+                    userSelection = userSelection.filter(name => name !== artist.name);
+                    card.classList.remove("selected");
+                } else if (userSelection.length < 5) {
+                    userSelection.push(artist.name);
+                    card.classList.add("selected");
+                }
+                selectedArtistsDiv.innerText = userSelection.length ? "Your picks: " + userSelection.join(", ") : "No artists selected yet.";
+            });
+            artistGrid.appendChild(card);
+        });
+
+        function saveAndGo() {
+            if (userSelection.length === 0) {
+                alert("Select at least one artist!");
+                return;
+            }
+            localStorage.setItem("selectedArtists", JSON.stringify(userSelection));
+            window.location.href = "match.html"; // Redirect to match page
+        }
+    </script>
+</body>
+
+</html>

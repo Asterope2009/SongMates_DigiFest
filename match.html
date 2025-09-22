@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SongMates~ Your Match</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        .container {
+            background: #111827;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .panel {
+            display: none;
+            background: white;
+            color: black;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            margin: 1rem auto;
+        }
+
+        .btn {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.6),
+                0 0 30px rgba(29, 185, 84, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: #17a344;
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.9),
+                0 0 40px rgba(29, 185, 84, 0.7),
+                0 0 60px rgba(29, 185, 84, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+
+    <h1 class="text-4xl font-bold mb-6">Your Top Match 🎵</h1>
+    <div id="result" class="text-6xl font-extrabold text-green-400 text-center mb-6"></div>
+
+    <div class="container">
+        <button type="button" onclick="showPersonalityPanel()" class="btn">Know more about your music vibe!</button>
+        <div id="personalityPanel" class="panel">
+            <div id="questions"></div>
+            <div id="personalityResult" class="mt-4 font-semibold"></div>
+        </div>
+        <div class="container">
+            <button type="button" onclick="window.location.href='finaltry.html';">Match again!</button>
+        </div>
+    </div>
+
+    <script>
+        // People dataset
+        const people = [
+            { name: "Nandini", artists: ["Taylor Swift", "Hotel Ugly", "Katseye", "Coldplay", "Dua Lipa"] },
+            { name: "Sparsh", artists: ["Diljit", "Karan Aujla", "The Weeknd", "Honey Singh", "Coldplay"] },
+            { name: "Aaditya", artists: ["Mark Amber", "Seedhe Maut", "Ed Sheeran", "Billie Eilish", "The Weeknd"] },
+            { name: "Yuvraj", artists: ["Arjit Singh", "Lady Gaga", "Honey Singh", "Sonu Nigam", "Imagine Dragons"] },
+            { name: "Kushagra", artists: ["Kushagra", "Blackpink", "Arijit Singh", "Graham", "Alec Benjamin"] },
+            { name: "Kartik", artists: ["Honey singh", "Guru Randhawa", "Seedhe Maut", "Billie Eilish", "Post Malone"] },
+            { name: "Isa", artists: ["Imagine Dragons", "Ed Sheeran", "Lana Del Rey", "Hotel Ugly", "Udit Narayan"] },
+            { name: "Tanishq", artists: ["Seedhe Maut", "TV Girl", "Arctic Monkeys", "Hotel Ugly", "Coldplay"] },
+            { name: "Tejasvi", artists: ["Arjit Singh", "AP Dhillon", "Carly Rae Jepsen", "Shreya Ghosal", "Diljit"] },
+            { name: "Hardik", artists: ["Diljit", "Honey Singh", "Lana Del Rey", "Arjit Singh", "Post Malone"] },
+            { name: "Priya", artists: ["Arjit Singh", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "Shreya Ghosal"] },
+            { name: "Harleen", artists: ["Karan Aujla", "Pritam", "Lana Del Rey", "Honey Singh", "Diljit"] },
+            { name: "Haasini", artists: ["AP Dhillon", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "LAUV"] },
+            { name: "Navya", artists: ["Stray Kids", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "Diljit"] },
+            { name: "Tanishq", artists: ["Karan Aujla", "Ed Sheeran", "Seedhe Maut", "Billie Eilish", "The Weeknd"] },
+            { name: "Krisha", artists: ["Isabel La Rosa", "Aditya Rekhari", "Maneskin", "Ed Sheeran", "Blackpink"] },
+            { name: "Parishka", artists: ["Diljit", "Ed Sheeran", "Lana Del Rey", "Billie Eilish", "Post Malone"] },
+            { name: "Tamanna", artists: ["Arjit Singh", "Charlie Puth", "Shreya Ghosal", "Billie Eilish", "The Weeknd"] },
+            { name: "Tulika", artists: ["Sunidhi Chauhan", "Arjit Singh", "Udit Naryan", "The Weeknd", "Anuv Jain"] },
+            { name: "Sushma", artists: ["Mohit Sharma", "Armaan Malik", "Arjit Singh", "Shreya Ghosal", "Kishore Kumar"] },
+            { name: "Sam", artists: ["Arctic Monkeys", "Tobii", "Seedhe Maut", "Lana Del Rey", "KK"] },
+            { name: "Aditi", artists: ["Papon", "Ed Sheeran", "KK", "One Direction", "Shawn Mendes"] },
+            { name: "Krishna", artists: ["Lata Mangeshkar", "Piyush Mishra", "Handsome Family", "Kishore Kumar", "Manna Dey"] },
+        ];
+
+        const userSelection = JSON.parse(localStorage.getItem("selectedArtists")) || [];
+        const resultDiv = document.getElementById("result");
+        const personalityPanel = document.getElementById("personalityPanel");
+        const questionsDiv = document.getElementById("questions");
+        const personalityResult = document.getElementById("personalityResult");
+
+        function calculateMatch(userSelection, person) {
+            const matches = userSelection.filter(artist => person.artists.includes(artist));
+            const maxPossible = Math.min(userSelection.length, person.artists.length);
+            const percentage = maxPossible > 0 ? (matches.length / maxPossible) * 100 : 0;
+            return { name: person.name, percentage: percentage.toFixed(0), matches };
+        }
+
+        function animateCount(finalPercentage, name) {
+            let count = 0;
+            const interval = setInterval(() => {
+                if (count >= finalPercentage) {
+                    clearInterval(interval);
+                    resultDiv.innerText = `${name} - ${finalPercentage}%`;
+                    launchConfetti();
+                } else {
+                    resultDiv.innerText = `${name} - ${count}%`;
+                    count++;
+                }
+            }, 20);
+        }
+
+        function launchConfetti() {
+            confetti({
+                particleCount: 600,
+                spread: 5000,
+                origin: { y: 0.6 }
+            });
+        }
+
+        if (userSelection.length === 0) {
+            resultDiv.innerText = "No artists selected!";
+        } else {
+            const results = people.map(p => calculateMatch(userSelection, p))
+                .filter(r => r.percentage > 0)
+                .sort((a, b) => b.percentage - a.percentage);
+            if (results.length === 0) {
+                resultDiv.innerText = "No matches found 😢";
+            } else {
+                const best = results[0];
+                animateCount(best.percentage, best.name);
+            }
+        }
+
+        function showPersonalityPanel() {
+            personalityPanel.style.display = "block";
+            showQuestions();
+        }
+
+        function showQuestions() {
+            questionsDiv.innerHTML = `
+                <div class="message">What kind of songs do you vibe with the most?</div><br>
+                <button onclick="nextQuestion('energy')" class="btn mb-2 w-full">Upbeat & Energetic</button>
+                <button onclick="nextQuestion('chill')" class="btn mb-2 w-full">Calm & Soothing</button>
+                <button onclick="nextQuestion('sad')" class="btn mb-2 w-full">Melancholic & Emotional</button>
+                <button onclick="nextQuestion('mixed')" class="btn w-full">A mix depending on mood</button>
+            `;
+        }
+
+        let answers = {};
+
+        function nextQuestion(answer) {
+            answers['vibe'] = answer;
+            questionsDiv.innerHTML = `
+                <div class="message">When do you mostly listen to music?</div><br>
+                <button onclick="finalQuestion('morning')" class="btn mb-2 w-full">Morning motivation</button>
+                <button onclick="finalQuestion('night')" class="btn mb-2 w-full">Late-night chill</button>
+                <button onclick="finalQuestion('party')" class="btn mb-2 w-full">While partying</button>
+                <button onclick="finalQuestion('random')" class="btn w-full">Anytime, anywhere</button>
+            `;
+        }
+
+        function finalQuestion(answer) {
+            answers['time'] = answer;
+            showResult();
+        }
+
+        function showResult() {
+            let vibe = answers['vibe'];
+            let time = answers['time'];
+            let message = "";
+
+            if (vibe === 'energy' && time === 'morning') {
+                message = "You're a go-getter! High-energy tunes help you start your day with a bang!";
+            } else if (vibe === 'chill' && time === 'night') {
+                message = "You appreciate calm vibes. Soft tunes help you unwind after a long day.";
+            } else if (vibe === 'sad') {
+                message = "You connect deeply with emotions. Music helps you process and feel everything.";
+            } else if (vibe === 'mixed' && time === 'random') {
+                message = "You're spontaneous and love exploring different moods through music.";
+            } else if (vibe === 'energy') {
+                message = "You thrive on upbeat beats! Music fuels your active lifestyle.";
+            } else if (vibe === 'chill') {
+                message = "Relaxed and thoughtful, you vibe with melodies that soothe the soul.";
+            } else {
+                message = "Your music taste is unique and dynamic—just like you!";
+            }
+
+            personalityResult.textContent = message;
+            questionsDiv.innerHTML = `<div class="message">Thanks for sharing! Keep vibing 🎶💚</div>`;
+        }
+    </script>
+
+</body>
+
+</html>
